@@ -36,12 +36,12 @@ server.decorate('cache', cache)
 
 // On route not exist
 server.setNotFoundHandler((request, reply) => {
-    reply.code(404).send({ error: 'Not found' })
+    return reply.code(404).send({ error: 'Not found' })
 })
 
 // Server Healthcheck
-server.get('/health', async function (request, response) {
-    return { status: 'OK' }
+server.get('/health', async function (request, reply) {
+    return reply.code(200).send('OK')
 })
 ;(async () => {
     if (!process.env.DOMAIN) {
