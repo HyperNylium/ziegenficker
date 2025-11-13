@@ -148,8 +148,8 @@ export default class Crunchyroll {
         const now = new Date().toUTCString()
 
         episodes = episodes.sort((a, b) => {
-            const dateA = new Date((a.episode_metadata.premium_available_date ?? a.episode_metadata.availability_starts ?? a.last_public) ?? now).getTime()
-            const dateB = new Date((b.episode_metadata.premium_available_date ?? b.episode_metadata.availability_starts ?? b.last_public) ?? now).getTime()
+            const dateA = new Date(a.episode_metadata.premium_available_date ?? a.episode_metadata.availability_starts ?? a.last_public ?? now).getTime()
+            const dateB = new Date(b.episode_metadata.premium_available_date ?? b.episode_metadata.availability_starts ?? b.last_public ?? now).getTime()
             return dateB - dateA
         })
 
