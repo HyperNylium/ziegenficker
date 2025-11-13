@@ -139,6 +139,9 @@ export default class Crunchyroll {
     }
 
     private async generateRSSFeed(lang: string) {
+        const domain = process.env.DOMAIN
+        if (!domain) return
+
         var episodes = await this.latestEpisodes(lang)
         if (!episodes) return
 
@@ -164,7 +167,7 @@ export default class Crunchyroll {
                     description: 'Check out the newest videos on Crunchyroll.',
                     link: 'https://www.crunchyroll.com/',
                     'atom:link': {
-                        '@_href': 'https://ziegenficker.live/crunchyroll/rss',
+                        '@_href': domain + '/crunchyroll/rss',
                         '@_rel': 'self',
                         '@_type': 'application/rss+xml'
                     },

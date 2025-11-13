@@ -7,13 +7,12 @@ import NodeCache from 'node-cache'
 import 'dotenv/config'
 import { routes } from './system/routes'
 import { middlewares } from './system/middlewares'
-import MultiPart from '@fastify/multipart'
 import { cronjobs } from './system/cronjobs'
 import Crunchyroll from './modules/crunchy/crunchy'
 import { discord } from './system/discord'
 const cache = new NodeCache({ stdTTL: 100, checkperiod: 120, useClones: false })
-const isProd = process.env.ISPROD
 
+// Startup Fastify server
 export const server = fastify()
 
 // Cors Handler
@@ -35,13 +34,6 @@ server.register(fastifyStatic, {
 // Decorate Cache Controller
 server.decorate('cache', cache)
 
-server.register(MultiPart, {
-    limits: {
-        fileSize: 1000000000,
-        parts: 1000
-    }
-})
-
 // On route not exist
 server.setNotFoundHandler((request, reply) => {
     reply.code(404).send({ error: 'Not found' })
@@ -52,11 +44,15 @@ server.get('/health', async function (request, response) {
     return { status: 'OK' }
 })
 ;(async () => {
+    if (!process.env.DOMAIN) {
+        console.error('Domain variable not defined in .env, cannot startup server.')
+        process.exit(1)
+    }
     if (process.env.DISCORD_TOKEN) {
         await discord()
         console.log('Discord Bot loaded.')
     } else {
-        console.log('Discord Bot token missing, not loaded.')
+        console.log('Discord Bot token missing, not booting discord client.')
     }
     const crunchy = new Crunchyroll()
     await crunchy.startRSSUpdater()
